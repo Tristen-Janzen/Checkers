@@ -1,2 +1,5 @@
-package com.pyramid.academy.projects;public class Board {
+package com.pyramid.academy.projects;
+
+public class Board {
+
 }

@@ -1,2 +1,5 @@
-package com.pyramid.academy.projects;public class Player {
+package com.pyramid.academy.projects;
+
+public class Player {
+
 }
