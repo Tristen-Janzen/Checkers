@@ -370,8 +370,97 @@ public class Board {
             //If the move is 2 squares, we need to set the square in between
             //to empty, update the new location to have the piece we're moving,
             //and make sure that the old location is no longer that piece.
+            //This if takes care of Setting the jumped piece to empty and king to false.
+            if((xNew-xOld==2)||(xNew-xOld==-2)) {
+                jump = true;
+                //Piece moving down
+                if(xNew-xOld==2){
+                    //Piece moving to the right two squares.
+                    if((yNew-yOld)==2) {
+                        getPiece(xNew-1,yNew-1).setColor("empty");
+                        getPiece(xNew-1,yNew-1).setKing(false);
+                    }
+                    //Piece moving to the left two squres.
+                    else if((yNew-yOld)==-2) {
+                        getPiece(xNew-1,yNew+1).setColor("empty");
+                        getPiece(xNew-1,yNew-1).setKing(false);
+                    }
+                }
+                else if(xNew-xOld==-2){
+                    //Piece moving to the right two squares.
+                    if((yNew-yOld)==2) {
+                        getPiece(xNew+1,yNew-1).setColor("empty");
+                        getPiece(xNew-1,yNew-1).setKing(false);
+                    }
+                    //Piece moving to the left two squres.
+                    else if((yNew-yOld)==-2) {
+                        getPiece(xNew+1,yNew+1).setColor("empty");
+                        getPiece(xNew-1,yNew-1).setKing(false);
+                    }
+                }
+            }
+            //Setting the new board position to the piece that the user picked.
+            board.get(xNew).set(yNew,p);
+            //Setting the old position to empty
+            board.get(xOld).set(yOld, new Piece("empty"));
+            jump = jumpAvaliable(p,xNew,yNew);
         }while(jump);
 
         checkForKing();
+    }
+    public boolean jumpAvaliable(Piece p,int x,int y){
+        int xNew, yNew;
+        String redOrBlack, other;
+        redOrBlack = p.getColor();
+        if(redOrBlack.equals("Red"))
+            other = "Black";
+        else
+            other = "Red";
+        //We need to iterate through up right, up left, down right, and down left
+        //if they're in bounds, checking if there is another avaliable jump
+        //So, we need to check if the position in any of the 4 corner of this square
+        //contain an enemy, we check to see if there is an empty space on the other side
+        //of it. If so, we return true. In any other cases, we return false.
+        xNew = x+1;
+        yNew = y+1;
+        //This move (down right) is legal if the piece is Black or if the piece is a king.
+        if((redOrBlack.equals("Black"))||(p.getKing())){
+            if (getPiece(xNew, yNew).getColor().equals(other)) {
+                if (getPiece(xNew + 1, yNew + 1).getColor().equals("empty")) {
+                    return true;
+                }
+            }
+        }
+        xNew = x+1;
+        yNew = y-1;
+        //This move (down left) is legal if the piece is Black or if the piece is a king.
+        if((redOrBlack.equals("Black"))||(p.getKing())){
+            if (getPiece(xNew, yNew).getColor().equals(other)) {
+                if (getPiece(xNew + 1, yNew - 1).getColor().equals("empty")) {
+                    return true;
+                }
+            }
+        }
+        xNew = x-1;
+        yNew = y-1;
+        //This move (up left) is legal if the piece is Red or if the piece is a king.
+        if((redOrBlack.equals("Red"))||(p.getKing())){
+            if (getPiece(xNew, yNew).getColor().equals(other)) {
+                if (getPiece(xNew - 1, yNew - 1).getColor().equals("empty")) {
+                    return true;
+                }
+            }
+        }
+        xNew = x-1;
+        yNew = y+1;
+        //This move (up right) is legal if the piece is Red or if the piece is a king.
+        if((redOrBlack.equals("Red"))||(p.getKing())){
+            if (getPiece(xNew, yNew).getColor().equals(other)) {
+                if (getPiece(xNew - 1, yNew + 1).getColor().equals("empty")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

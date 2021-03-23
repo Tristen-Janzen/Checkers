@@ -8,10 +8,14 @@ public class Main {
         Board board = new Board(player1,player2);
         boolean playerOneTurn = true;
         do{
-            if(playerOneTurn)
+            if(playerOneTurn) {
                 board.simulateTurn(board.getPlayer1());
-            else
+                playerOneTurn = false;
+            }
+            else {
                 board.simulateTurn(board.getPlayer2());
+                playerOneTurn = true;
+            }
             System.out.print(board);
         }while(!board.checkForWin());
     }
