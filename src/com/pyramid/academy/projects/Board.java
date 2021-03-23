@@ -230,9 +230,28 @@ public class Board {
         //TODO
     }
     public boolean checkForWin(){
-        //TODO
-
-        return false;
+        boolean isRedPieceOnBoard = false;
+        boolean isBlackPieceOnBoard = false;
+        for(int row = 0; row < board.size(); row++){
+            for(int col = 0; col < board.get(row).size(); col++){
+                Piece currentPiece = board.get(row).get(col);
+                if(currentPiece.getColor() == "Red"){
+                    isRedPieceOnBoard = true;
+                }
+                if(currentPiece.getColor() == "Black"){
+                    isBlackPieceOnBoard = true;
+                }
+            }
+        }
+        if(isRedPieceOnBoard && !isBlackPieceOnBoard) {
+            System.out.println("Red player has won!");
+            return true; // player won
+        }
+        if(isBlackPieceOnBoard && !isRedPieceOnBoard){
+            System.out.println("Black player has won");
+            return true; // player won
+        }
+        return false; // no one has won
     }
     public void simulateTurn(Player player){
         boolean move = false;
