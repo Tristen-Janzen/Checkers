@@ -135,6 +135,8 @@ public class Board {
         // will be a separate move.
         if((x-xOld>2)||(x-xOld<(-2)))
             return false;
+        if((y-yOld>2)||(y-yOld<(-2)))
+            return false;
         //If the place you're moving to is two squares away, that means it must be
         //a jump, so if the desired location is two squares away, check for eligible jump.
         if((x-xOld==2)||(x-xOld==-2)){
@@ -326,21 +328,31 @@ public class Board {
     }
     public void simulateTurn(Player player){
         boolean move = false;
+        boolean jump = false;
+        Piece p = new Piece("empty");
+        int xOld=0, yOld=0;
         do{
-            Piece p;
-            int yOld, yNew;
-            int xOld, xNew;
+            int yNew;
+            int xNew;
+            jump = false;
             do {
-                String str = player.getInputPiece();
-                xOld = player.strToLocationX(str);
-                yOld = player.strToLocationY(str);
-                p = getPiece(xOld, yOld);
-            }while(p.getColor()=="empty");
-            String str = player.getInputLocation(p);
-            xNew = player.strToLocationX(str);
-            yNew = player.strToLocationY(str);
-            move = canMove(p,xNew,yNew,xOld,yOld);
-        }while(!move);
+                while (p.getColor().equals("empty")) {
+                    String str = player.getInputPiece();
+                    xOld = player.strToLocationX(str);
+                    yOld = player.strToLocationY(str);
+                    p = getPiece(xOld, yOld);
+                }
+                String str = player.getInputLocation(p);
+                xNew = player.strToLocationX(str);
+                yNew = player.strToLocationY(str);
+                move = canMove(p, xNew, yNew, xOld, yOld);
+            } while (!move);
+            //Now that we are sure that the move is valid, we move.
+            //If the move is 2 squares, we need to set the square in between
+            //to empty, update the new location to have the piece we're moving,
+            //and make sure that the old location is no longer that piece.
+        }while(jump);
+
         checkForKing();
     }
 }
