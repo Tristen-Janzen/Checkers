@@ -300,7 +300,26 @@ public class Board {
         return squareLine;
     }
     public void checkForKing(){
-        //TODO
+        String player1Color = player1.getColor();
+        String player2Color = player2.getColor();
+
+        // check if there any player 1 pieces on row 1(player 2's side) that are not
+        // yet a king. If so, set them to king.
+        for(int col = 0; col < board.get(0).size(); col++){
+            Piece currentPiece = board.get(0).get(col);
+            if(currentPiece.getColor() == player1Color && !currentPiece.getKing()){
+                currentPiece.setKing(true);
+            }
+        }
+
+        // check if there any player 2 pieces on row 8(player 1's side) that are not
+        // yet a king. If so, set them to king.
+        for(int col = 0; col < board.get(7).size(); col++){
+            Piece currentPiece = board.get(0).get(col);
+            if(currentPiece.getColor() == player2Color && !currentPiece.getKing()){
+                currentPiece.setKing(true);
+            }
+        }
     }
     public boolean checkForWin(){
         boolean isRedPieceOnBoard = false;
