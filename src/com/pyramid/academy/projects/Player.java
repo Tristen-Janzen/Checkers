@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player {
-    ArrayList<Piece> pieces = new ArrayList<>();
-    String color;
+    private ArrayList<Piece> pieces = new ArrayList<>();
+    private String color;
 
     public Player(String c){
         color = c;
         for(int i = 0;i<12;i++){
-            Piece p = new Piece();
-            p.setColor(color);
+            Piece p = new Piece(color);
             pieces.add(p);
         }
     }
@@ -19,6 +18,11 @@ public class Player {
     public ArrayList<Piece> getPieces() {
         return pieces;
     }
+
+    public String getColor() {
+        return color;
+    }
+
     public void takePiece(Piece piece){
         piece.setColor("empty");
     }

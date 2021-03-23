@@ -10,7 +10,78 @@ public class Board {
     public Board(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
-
+        int player1Count = 0;
+        int player2Count = 0;
+        ArrayList<Piece> row1 = new ArrayList<>();
+        ArrayList<Piece> row2 = new ArrayList<>();
+        ArrayList<Piece> row3 = new ArrayList<>();
+        ArrayList<Piece> row4 = new ArrayList<>();
+        ArrayList<Piece> row5 = new ArrayList<>();
+        ArrayList<Piece> row6 = new ArrayList<>();
+        ArrayList<Piece> row7 = new ArrayList<>();
+        ArrayList<Piece> row8 = new ArrayList<>();
+        for(int i = 0;i<8;i++){
+            if(i%2==0)
+                row1.add(new Piece("empty"));
+            else {
+                row1.add(player2.getPieces().get(player2Count));
+                player2Count++;
+            }
+        }
+        for(int i = 0;i<8;i++){
+            if(i%2==1)
+                row2.add(new Piece("empty"));
+            else {
+                row2.add(player2.getPieces().get(player2Count));
+                player2Count++;
+            }
+        }
+        for(int i = 0;i<8;i++){
+            if(i%2==0)
+                row3.add(new Piece("empty"));
+            else {
+                row3.add(player2.getPieces().get(player2Count));
+                player2Count++;
+            }
+        }
+        for(int i = 0;i<8;i++){
+            row4.add(new Piece("empty"));
+        }
+        for(int i = 0;i<8;i++){
+            row5.add(new Piece("empty"));
+        }
+        for(int i = 0;i<8;i++){
+            if(i%2==1)
+                row6.add(new Piece("empty"));
+            else {
+                row6.add(player1.getPieces().get(player1Count));
+                player1Count++;
+            }
+        }
+        for(int i = 0;i<8;i++){
+            if(i%2==0)
+                row7.add(new Piece("empty"));
+            else {
+                row7.add(player1.getPieces().get(player1Count));
+                player1Count++;
+            }
+        }
+        for(int i = 0;i<8;i++){
+            if(i%2==1)
+                row8.add(new Piece("empty"));
+            else {
+                row8.add(player1.getPieces().get(player1Count));
+                player1Count++;
+            }
+        }
+        board.add(row1);
+        board.add(row2);
+        board.add(row3);
+        board.add(row4);
+        board.add(row5);
+        board.add(row6);
+        board.add(row7);
+        board.add(row8);
     }
 
     public Player getPlayer1() {
@@ -21,26 +92,48 @@ public class Board {
         return player2;
     }
 
-    public void simulateTurn(Player player){
-            boolean move = false;
-            do{
-                Piece p;
-                int y;
-                int x;
-                do {
-                    String str = player.getInputPiece();
-                    x = player.strToLocationX(str);
-                    y = player.strToLocationY(str);
-                    p = getPiece(x, y);
-                }while(p.getColor()!="empty");
-                String str = player.getInputLocation();
-                x = player.strToLocationX(str);
-                y = player.strToLocationY(str);
-                move = canMove(p,x,y);
-            }while(!move);
-            checkForKing();
+    public Piece getPiece(int x, int y){
+        return board.get(x).get(y);
+    }
 
+    public boolean canMove(Piece p, int x, int y, int xOld, int yOld) {
+        //Simple out of bounds check
+        if((x>=8)||(x<0)||(y>=8)||(y<0))
+            return false;
+            //You can't ever move to whitespace.
+            //Now checking if the desired location is a whitespace in rows 0,2,4,6.
+        else if((x%2==0)&&(y%2==0))
+            return false;
+            //Now checking if the desired location is a whitespace in rows 1,3,5,7.
+        else if((x%2==1)&&(y%2==1))
+            return false;
+            //You can only move backwards if you are a king, so checking for non-king back movement.
+        else if(!p.getKing()){
+            if(p.getColor().equals("Red")){
+                if((x-xOld)>0)
+                    return false;
+            }
+            else{
+                if((x-xOld)<0)
+                    return false;
+            }
         }
+        //You can't ever move to a spot that is occupied by a piece of your same color.
+        //Now checking if the desired location has a piece of the same color.
+        else if(getPiece(x,y).getColor().equals(p.getColor()))
+            return false;
+            //You can never move within the same column, must be diagonal movement.
+        else if(x==xOld)
+            return false;
+            //You can never move within the same row, must be diagonal movement.
+        else if(y==yOld)
+            return false;
+            //If you're moving more than 2 columns, the move is illegal, since every jump
+            // will be a separate move.
+        else if((x-xOld>2)||(x-xOld<(-2)))
+            return false;
+        return true;
+    }
 
     @Override
     public String toString() {
@@ -132,5 +225,32 @@ public class Board {
             squareLine = emptyBlackSquareAscii[2];
         }
         return squareLine;
+    }
+    public void checkForKing(){
+        //TODO
+    }
+    public boolean checkForWin(){
+        //TODO
+
+        return false;
+    }
+    public void simulateTurn(Player player){
+        boolean move = false;
+        do{
+            Piece p;
+            int yOld, yNew;
+            int xOld, xNew;
+            do {
+                String str = player.getInputPiece();
+                xOld = player.strToLocationX(str);
+                yOld = player.strToLocationY(str);
+                p = getPiece(xOld, yOld);
+            }while(p.getColor()=="empty");
+            String str = player.getInputLocation(p);
+            xNew = player.strToLocationX(str);
+            yNew = player.strToLocationY(str);
+            move = canMove(p,xNew,yNew,xOld,yOld);
+        }while(!move);
+        checkForKing();
     }
 }

@@ -9,9 +9,9 @@ public class Main {
         boolean playerOneTurn = true;
         do{
             if(playerOneTurn)
-                board.simulateTurn(board.getPlayer1);
+                board.simulateTurn(board.getPlayer1());
             else
-                board.simulateTurn(board.getPlayer2);
+                board.simulateTurn(board.getPlayer2());
             System.out.print(board);
         }while(!board.checkForWin());
     }
