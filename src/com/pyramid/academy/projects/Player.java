@@ -35,11 +35,13 @@ public class Player {
     }
     public int strToLocationX(String s){
         String x = s.split(",")[0];
-        return Integer.parseInt(x);
+        //-1 to make it a usable index instead of a location
+        return Integer.parseInt(x)-1;
     }
     public int strToLocationY(String s){
         String y = s.split(",")[1];
-        return Integer.parseInt(y);
+        //-1 to make it a usable index instead of a location
+        return Integer.parseInt(y)-1;
     }
     public String getInputLocation(Piece piece){
         try {
