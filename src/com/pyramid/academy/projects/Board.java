@@ -100,15 +100,18 @@ public class Board {
         //Simple out of bounds check
         if((x>=8)||(x<0)||(y>=8)||(y<0))
             return false;
-            //You can't ever move to whitespace.
-            //Now checking if the desired location is a whitespace in rows 0,2,4,6.
-        else if((x%2==0)&&(y%2==0))
+        //Double check to make sure that the piece is indeed not empty
+        if(p.getColor().equals("empty"))
             return false;
-            //Now checking if the desired location is a whitespace in rows 1,3,5,7.
-        else if((x%2==1)&&(y%2==1))
+        //You can never move to whitespace.
+        //Now checking if the desired location is a whitespace in rows 0,2,4,6.
+        if((x%2==0)&&(y%2==0))
             return false;
-            //You can only move backwards if you are a king, so checking for non-king back movement.
-        else if(!p.getKing()){
+        //Now checking if the desired location is a whitespace in rows 1,3,5,7.
+        if((x%2==1)&&(y%2==1))
+            return false;
+        //You can only move backwards if you are a king, so checking for non-king back movement.
+        if(!p.getKing()){
             if(p.getColor().equals("Red")){
                 if((x-xOld)>0)
                     return false;
@@ -118,20 +121,88 @@ public class Board {
                     return false;
             }
         }
-        //You can't ever move to a spot that is occupied by a piece of your same color.
-        //Now checking if the desired location has a piece of the same color.
-        else if(getPiece(x,y).getColor().equals(p.getColor()))
+        //You can't ever move to a spot that is occupied by a piece.
+        //Now checking if the desired location has a piece.
+        if(!getPiece(x,y).getColor().equals("empty"))
             return false;
-            //You can never move within the same column, must be diagonal movement.
-        else if(x==xOld)
+        //You can never move within the same column, must be diagonal movement.
+        if(x==xOld)
             return false;
-            //You can never move within the same row, must be diagonal movement.
-        else if(y==yOld)
+        //You can never move within the same row, must be diagonal movement.
+        if(y==yOld)
             return false;
-            //If you're moving more than 2 columns, the move is illegal, since every jump
-            // will be a separate move.
-        else if((x-xOld>2)||(x-xOld<(-2)))
+        //If you're moving more than 2 columns, the move is illegal, since every jump
+        // will be a separate move.
+        if((x-xOld>2)||(x-xOld<(-2)))
             return false;
+        //If the place you're moving to is two squares away, that means it must be
+        //a jump, so if the desired location is two squares away, check for eligible jump.
+        if((x-xOld==2)||(x-xOld==-2)){
+            //Piece moving down two squares.
+            if(x-xOld==2){
+                //Piece moving to the right two squares.
+                if((y-yOld)==2) {
+                    //c denotes the color of the piece you would have to jump in order to
+                    //get to the space desired.
+                    String c = getPiece(x-1,y-1).getColor();
+                    if(p.getColor().equals("Red")){
+                        if((c.equals("Red"))||(c.equals("empty")))
+                            return false;
+                    }
+                    else if(p.getColor().equals("Black")){
+                        if((c.equals("Black"))||(c.equals("empty")))
+                            return false;
+                    }
+                }
+                //Piece moving to the left two squres.
+                else if((y-yOld)==-2) {
+                    //c denotes the color of the piece you would have to jump in order to
+                    //get to the space desired.
+                    String c = getPiece(x-1,y+1).getColor();
+                    if(p.getColor().equals("Red")){
+                        if((c.equals("Red"))||(c.equals("empty")))
+                            return false;
+                    }
+                    else if(p.getColor().equals("Black")){
+                        if((c.equals("Black"))||(c.equals("empty")))
+                            return false;
+                    }
+                }
+            }
+            //Piece moving up two squares.
+            else if(x-xOld==-2){
+                //Piece moving to the right two squares.
+                if((y-yOld)==2) {
+                    //c denotes the color of the piece you would have to jump in order to
+                    //get to the space desired.
+                    String c = getPiece(x+1,y-1).getColor();
+                    if(p.getColor().equals("Red")){
+                        if((c.equals("Red"))||(c.equals("empty")))
+                            return false;
+                    }
+                    else if(p.getColor().equals("Black")){
+                        if((c.equals("Black"))||(c.equals("empty")))
+                            return false;
+                    }
+                }
+                //Piece moving to the left two squres.
+                else if((y-yOld)==-2) {
+                    //c denotes the color of the piece you would have to jump in order to
+                    //get to the space desired.
+                    String c = getPiece(x+1,y+1).getColor();
+                    if(p.getColor().equals("Red")){
+                        if((c.equals("Red"))||(c.equals("empty")))
+                            return false;
+                    }
+                    else if(p.getColor().equals("Black")){
+                        if((c.equals("Black"))||(c.equals("empty")))
+                            return false;
+                    }
+                }
+            }
+        }
+
+
         return true;
     }
 
