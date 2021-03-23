@@ -152,11 +152,11 @@ public class Board {
                 for(int r = 0; r < 3; r++){ // builds board row of 3 character height i.e. three lines per row
                     if(j == 0){ // add row numbers at beginning a board row
                         if(r == 0){
-                            asciiRow[0] += ((j+1) + " ");
+                            asciiRow[r] += ((i+1) + " ");
 
                         }
                         else{
-                            asciiRow[0] += "  ";
+                            asciiRow[r] += "  ";
                         }
                     }
                     if(i % 2 == 0){ // first square in row is white
@@ -165,7 +165,7 @@ public class Board {
                         }
                         else{ // odd jth column is black
                             String squareLine;
-                            if(r == 2){ // put piece initial in middle line, e.g. KR, R, KB, or K
+                            if(r == 1){ // put piece initial in middle line, e.g. KR, R, KB, or K
                                 Piece currentPiece = board.get(i).get(j);
                                 squareLine = getPieceSquareLine(currentPiece); // helper method returns middle line
                             }
@@ -178,7 +178,7 @@ public class Board {
                     else{ // first square in row is black
                         if(j % 2 == 0){ // even jth column is black
                             String squareLine;
-                            if(r == 2){ // put piece initial in middle line, e.g. KR, R, KB, or K
+                            if(r == 1){ // put piece initial in middle line, e.g. KR, R, KB, or K
                                 Piece currentPiece = board.get(i).get(j);
                                 squareLine = getPieceSquareLine(currentPiece); // helper method returns middle line
                             }
@@ -222,7 +222,7 @@ public class Board {
             squareLine = "  B   |";
         }
         else{ // empty
-            squareLine = emptyBlackSquareAscii[2];
+            squareLine = emptyBlackSquareAscii[1];
         }
         return squareLine;
     }
