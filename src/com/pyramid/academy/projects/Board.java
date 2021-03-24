@@ -156,11 +156,11 @@ public class Board {
                             return false;
                     }
                 }
-                //Piece moving to the left two squres.
+                //Piece moving to the left two squares.
                 else if((x-xOld)==-2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
-                    String c = getPiece(x-1,y+1).getColor();
+                    String c = getPiece(x+1,y-1).getColor();
                     if(p.getColor().equals("Red")){
                         if((c.equals("Red"))||(c.equals("empty")))
                             return false;
@@ -177,7 +177,7 @@ public class Board {
                 if((x-xOld)==2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
-                    String c = getPiece(x+1,y-1).getColor();
+                    String c = getPiece(x-1,y+1).getColor();
                     if(p.getColor().equals("Red")){
                         if((c.equals("Red"))||(c.equals("empty")))
                             return false;
@@ -187,7 +187,7 @@ public class Board {
                             return false;
                     }
                 }
-                //Piece moving to the left two squres.
+                //Piece moving to the left two squares.
                 else if((x-xOld)==-2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
@@ -315,7 +315,7 @@ public class Board {
         // check if there any player 2 pieces on row 8(player 1's side) that are not
         // yet a king. If so, set them to king.
         for(int col = 0; col < board.get(7).size(); col++){
-            Piece currentPiece = board.get(0).get(col);
+            Piece currentPiece = board.get(7).get(col);
             if(currentPiece.getColor() == player2Color && !currentPiece.getKing()){
                 currentPiece.setKing(true);
             }
@@ -354,6 +354,8 @@ public class Board {
             int yNew;
             int xNew;
             lastTurnJump = jump;
+            if(jump)
+                System.out.println(String.format(this+"\n%s has another jump available! You must jump now!",player.getColor()));
             jump = false;
             do {
                 if(!lastTurnJump){
@@ -388,20 +390,20 @@ public class Board {
                     }
                     //Piece moving to the left two squares.
                     else if((xNew-xOld)==-2) {
-                        getPiece(xNew-1,yNew+1).setColor("empty");
-                        getPiece(xNew-1,yNew-1).setKing(false);
+                        getPiece(xNew+1,yNew-1).setColor("empty");
+                        getPiece(xNew+1,yNew-1).setKing(false);
                     }
                 }
                 else if(yNew-yOld==-2){
                     //Piece moving to the right two squares.
                     if((xNew-xOld)==2) {
-                        getPiece(xNew+1,yNew-1).setColor("empty");
-                        getPiece(xNew-1,yNew-1).setKing(false);
+                        getPiece(xNew-1,yNew+1).setColor("empty");
+                        getPiece(xNew-1,yNew+1).setKing(false);
                     }
-                    //Piece moving to the left two squres.
+                    //Piece moving to the left two squares.
                     else if((xNew-xOld)==-2) {
                         getPiece(xNew+1,yNew+1).setColor("empty");
-                        getPiece(xNew-1,yNew-1).setKing(false);
+                        getPiece(xNew+1,yNew+1).setKing(false);
                     }
                 }
             }
@@ -411,6 +413,8 @@ public class Board {
             board.get(yOld).set(xOld, new Piece("empty"));
             if(jump)
                 jump = jumpAvailable(p,xNew,yNew);
+            xOld=xNew;
+            yOld=yNew;
         }while(jump);
 
         checkForKing();
@@ -425,47 +429,67 @@ public class Board {
         else
             other = "Red";
         //We need to iterate through up right, up left, down right, and down left
-        //if they're in bounds, checking if there is another avaliable jump
+        //if they're in bounds, checking if there is another available jump
         //So, we need to check if the position in any of the 4 corner of this square
         //contain an enemy, we check to see if there is an empty space on the other side
         //of it. If so, we return true. In any other cases, we return false.
         xNew = x+1;
         yNew = y+1;
+
         //This move (down right) is legal if the piece is Black or if the piece is a king.
-        if((redOrBlack.equals("Black"))||(p.getKing())){
-            if (getPiece(xNew, yNew).getColor().equals(other)) {
-                if (getPiece(xNew + 1, yNew + 1).getColor().equals("empty")) {
-                    return true;
+        if (((xNew) <= 7) && ((yNew) <= 7)){
+            if ((redOrBlack.equals("Black")) || (p.getKing())) {
+                if (getPiece(xNew, yNew).getColor().equals(other)) {
+                    //In each nested if, we need to check if it goes out of bounds, so if we are adding, we need to check
+                    //to make sure it is less than or equal to 7, if we're subtracting, we need to make sure it is
+                    //greater than or equal to 0.
+                    if (((xNew + 1) <= 7) && ((yNew + 1) <= 7)) {
+                        if (getPiece(xNew + 1, yNew + 1).getColor().equals("empty")) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
         xNew = x-1;
         yNew = y+1;
         //This move (down left) is legal if the piece is Black or if the piece is a king.
-        if((redOrBlack.equals("Black"))||(p.getKing())){
-            if (getPiece(xNew, yNew).getColor().equals(other)) {
-                if (getPiece(xNew + 1, yNew - 1).getColor().equals("empty")) {
-                    return true;
+        if (((xNew) >= 0) && ((yNew) <= 7)){
+            if ((redOrBlack.equals("Black")) || (p.getKing())) {
+                if (getPiece(xNew, yNew).getColor().equals(other)) {
+                    if (((xNew - 1) >= 0) && ((yNew + 1) <= 7)) {
+                        if (getPiece(xNew - 1, yNew + 1).getColor().equals("empty")) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
         xNew = x-1;
         yNew = y-1;
         //This move (up left) is legal if the piece is Red or if the piece is a king.
-        if((redOrBlack.equals("Red"))||(p.getKing())){
-            if (getPiece(xNew, yNew).getColor().equals(other)) {
-                if (getPiece(xNew - 1, yNew - 1).getColor().equals("empty")) {
-                    return true;
+        if (((xNew) >= 0) && ((yNew) >= 0)){
+            if ((redOrBlack.equals("Red")) || (p.getKing())) {
+                if (getPiece(xNew, yNew).getColor().equals(other)) {
+                    if (((xNew - 1) >= 0) && ((yNew - 1) >= 0)) {
+                        if (getPiece(xNew - 1, yNew - 1).getColor().equals("empty")) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
         xNew = x+1;
         yNew = y-1;
         //This move (up right) is legal if the piece is Red or if the piece is a king.
-        if((redOrBlack.equals("Red"))||(p.getKing())){
-            if (getPiece(xNew, yNew).getColor().equals(other)) {
-                if (getPiece(xNew - 1, yNew + 1).getColor().equals("empty")) {
-                    return true;
+        if (((xNew) <= 7) && ((yNew) >= 0)){
+            if ((redOrBlack.equals("Red")) || (p.getKing())) {
+                if (getPiece(xNew, yNew).getColor().equals(other)) {
+                    if (((xNew + 1) <= 7) && ((yNew - 1) >= 0)) {
+                        if (getPiece(xNew + 1, yNew - 1).getColor().equals("empty")) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
