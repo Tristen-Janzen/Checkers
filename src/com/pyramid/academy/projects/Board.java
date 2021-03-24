@@ -403,12 +403,12 @@ public class Board {
             board.get(xNew).set(yNew,p);
             //Setting the old position to empty
             board.get(xOld).set(yOld, new Piece("empty"));
-            jump = jumpAvaliable(p,xNew,yNew);
+            jump = jumpAvailable(p,xNew,yNew);
         }while(jump);
 
         checkForKing();
     }
-    public boolean jumpAvaliable(Piece p,int x,int y){
+    public boolean jumpAvailable(Piece p, int x, int y){
         int xNew, yNew;
         String redOrBlack, other;
         redOrBlack = p.getColor();
