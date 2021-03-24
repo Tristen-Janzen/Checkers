@@ -409,7 +409,8 @@ public class Board {
             board.get(yNew).set(xNew,p);
             //Setting the old position to empty
             board.get(yOld).set(xOld, new Piece("empty"));
-            jump = jumpAvailable(p,xNew,yNew);
+            if(jump)
+                jump = jumpAvailable(p,xNew,yNew);
         }while(jump);
 
         checkForKing();
@@ -438,8 +439,8 @@ public class Board {
                 }
             }
         }
-        xNew = x+1;
-        yNew = y-1;
+        xNew = x-1;
+        yNew = y+1;
         //This move (down left) is legal if the piece is Black or if the piece is a king.
         if((redOrBlack.equals("Black"))||(p.getKing())){
             if (getPiece(xNew, yNew).getColor().equals(other)) {
@@ -458,8 +459,8 @@ public class Board {
                 }
             }
         }
-        xNew = x-1;
-        yNew = y+1;
+        xNew = x+1;
+        yNew = y-1;
         //This move (up right) is legal if the piece is Red or if the piece is a king.
         if((redOrBlack.equals("Red"))||(p.getKing())){
             if (getPiece(xNew, yNew).getColor().equals(other)) {
