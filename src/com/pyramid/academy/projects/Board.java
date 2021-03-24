@@ -93,7 +93,7 @@ public class Board {
     }
 
     public Piece getPiece(int x, int y){
-        return board.get(x).get(y);
+        return board.get(y).get(x);
     }
 
     public boolean canMove(Piece p, int x, int y, int xOld, int yOld) {
@@ -105,19 +105,19 @@ public class Board {
             return false;
         //You can never move to whitespace.
         //Now checking if the desired location is a whitespace in rows 0,2,4,6.
-        if((x%2==0)&&(y%2==0))
+        if((y%2==0)&&(x%2==0))
             return false;
         //Now checking if the desired location is a whitespace in rows 1,3,5,7.
-        if((x%2==1)&&(y%2==1))
+        if((y%2==1)&&(x%2==1))
             return false;
         //You can only move backwards if you are a king, so checking for non-king back movement.
         if(!p.getKing()){
             if(p.getColor().equals("Red")){
-                if((x-xOld)>0)
+                if((y-yOld)>0)
                     return false;
             }
             else{
-                if((x-xOld)<0)
+                if((y-yOld)<0)
                     return false;
             }
         }
@@ -131,7 +131,7 @@ public class Board {
         //You can never move within the same row, must be diagonal movement.
         if(y==yOld)
             return false;
-        //If you're moving more than 2 columns, the move is illegal, since every jump
+        //If you're moving more than 2 rows or columns, the move is illegal, since every jump
         // will be a separate move.
         if((x-xOld>2)||(x-xOld<(-2)))
             return false;
@@ -139,11 +139,11 @@ public class Board {
             return false;
         //If the place you're moving to is two squares away, that means it must be
         //a jump, so if the desired location is two squares away, check for eligible jump.
-        if((x-xOld==2)||(x-xOld==-2)){
+        if((y-yOld==2)||(y-yOld==-2)){
             //Piece moving down two squares.
-            if(x-xOld==2){
+            if(y-yOld==2){
                 //Piece moving to the right two squares.
-                if((y-yOld)==2) {
+                if((x-xOld)==2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
                     String c = getPiece(x-1,y-1).getColor();
@@ -157,7 +157,7 @@ public class Board {
                     }
                 }
                 //Piece moving to the left two squres.
-                else if((y-yOld)==-2) {
+                else if((x-xOld)==-2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
                     String c = getPiece(x-1,y+1).getColor();
@@ -172,9 +172,9 @@ public class Board {
                 }
             }
             //Piece moving up two squares.
-            else if(x-xOld==-2){
+            else if(y-yOld==-2){
                 //Piece moving to the right two squares.
-                if((y-yOld)==2) {
+                if((x-xOld)==2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
                     String c = getPiece(x+1,y-1).getColor();
@@ -188,7 +188,7 @@ public class Board {
                     }
                 }
                 //Piece moving to the left two squres.
-                else if((y-yOld)==-2) {
+                else if((x-xOld)==-2) {
                     //c denotes the color of the piece you would have to jump in order to
                     //get to the space desired.
                     String c = getPiece(x+1,y+1).getColor();
@@ -347,19 +347,25 @@ public class Board {
     }
     public void simulateTurn(Player player){
         boolean move = false;
-        boolean jump = false;
+        boolean jump = false, lastTurnJump = false;
         Piece p = new Piece("empty");
         int xOld=0, yOld=0;
         do{
             int yNew;
             int xNew;
+            lastTurnJump = jump;
             jump = false;
             do {
-                while (p.getColor().equals("empty")) {
+                if(!lastTurnJump){
+                    p = new Piece("empty");
+                }
+                while (!p.getColor().equals(player.getColor())) {
                     String str = player.getInputPiece();
                     xOld = player.strToLocationX(str);
                     yOld = player.strToLocationY(str);
                     p = getPiece(xOld, yOld);
+                    if(!p.getColor().equals(player.getColor()))
+                        System.out.println("You cannot select an enemy piece.");
                 }
                 String str = player.getInputLocation(p);
                 xNew = player.strToLocationX(str);
@@ -371,43 +377,44 @@ public class Board {
             //to empty, update the new location to have the piece we're moving,
             //and make sure that the old location is no longer that piece.
             //This if takes care of Setting the jumped piece to empty and king to false.
-            if((xNew-xOld==2)||(xNew-xOld==-2)) {
+            if((yNew-yOld==2)||(yNew-yOld==-2)) {
                 jump = true;
                 //Piece moving down
-                if(xNew-xOld==2){
+                if(yNew-yOld==2){
                     //Piece moving to the right two squares.
-                    if((yNew-yOld)==2) {
+                    if((xNew-xOld)==2) {
                         getPiece(xNew-1,yNew-1).setColor("empty");
                         getPiece(xNew-1,yNew-1).setKing(false);
                     }
-                    //Piece moving to the left two squres.
-                    else if((yNew-yOld)==-2) {
+                    //Piece moving to the left two squares.
+                    else if((xNew-xOld)==-2) {
                         getPiece(xNew-1,yNew+1).setColor("empty");
                         getPiece(xNew-1,yNew-1).setKing(false);
                     }
                 }
-                else if(xNew-xOld==-2){
+                else if(yNew-yOld==-2){
                     //Piece moving to the right two squares.
-                    if((yNew-yOld)==2) {
+                    if((xNew-xOld)==2) {
                         getPiece(xNew+1,yNew-1).setColor("empty");
                         getPiece(xNew-1,yNew-1).setKing(false);
                     }
                     //Piece moving to the left two squres.
-                    else if((yNew-yOld)==-2) {
+                    else if((xNew-xOld)==-2) {
                         getPiece(xNew+1,yNew+1).setColor("empty");
                         getPiece(xNew-1,yNew-1).setKing(false);
                     }
                 }
             }
             //Setting the new board position to the piece that the user picked.
-            board.get(xNew).set(yNew,p);
+            board.get(yNew).set(xNew,p);
             //Setting the old position to empty
-            board.get(xOld).set(yOld, new Piece("empty"));
+            board.get(yOld).set(xOld, new Piece("empty"));
             jump = jumpAvailable(p,xNew,yNew);
         }while(jump);
 
         checkForKing();
     }
+
     public boolean jumpAvailable(Piece p, int x, int y){
         int xNew, yNew;
         String redOrBlack, other;

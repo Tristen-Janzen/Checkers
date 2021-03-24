@@ -24,11 +24,12 @@ public class Player {
     }
 
     public void takePiece(Piece piece){
+        piece.setKing(false);
         piece.setColor("empty");
     }
     public String getInputPiece(){
         try {
-            System.out.println("Please enter the location eg. 1,2 of the piece you" +
+            System.out.println("Please enter the location eg. 1,2 of the piece you " +
                     "would like to move.");
             Scanner userInput = new Scanner(System.in);
             return userInput.nextLine();
@@ -49,7 +50,7 @@ public class Player {
     }
     public String getInputLocation(Piece piece){
         try {
-            System.out.println("Please enter the location eg. 1,2 of where you" +
+            System.out.println("Please enter the location eg. 1,2 of where you " +
                     "would like to move your selected piece.");
             Scanner userInput = new Scanner(System.in);
             return userInput.nextLine();
