@@ -367,7 +367,7 @@ public class Board {
                     yOld = player.strToLocationY(str);
                     p = getPiece(xOld, yOld);
                     if(!p.getColor().equals(player.getColor()))
-                        System.out.println("You cannot select an enemy piece.");
+                        System.out.println("That is an invalid selection. Please choose a piece that matches your color.");
                 }
                 String str = player.getInputLocation(p);
                 xNew = player.strToLocationX(str);
