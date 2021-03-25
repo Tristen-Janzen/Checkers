@@ -374,6 +374,7 @@ public class Board {
                 yNew = player.strToLocationY(str);
                 move = canMove(p, xNew, yNew, xOld, yOld);
             } while (!move);
+            updatePlayerNumberOfMovesOrReset(player, false);
             //Now that we are sure that the move is valid, we move.
             //If the move is 2 squares, we need to set the square in between
             //to empty, update the new location to have the piece we're moving,
@@ -406,6 +407,7 @@ public class Board {
                         getPiece(xNew+1,yNew+1).setKing(false);
                     }
                 }
+                updatePlayerNumberOfMovesOrReset(player, true); // reset num of moves taken before taking opponent piece
             }
             //Setting the new board position to the piece that the user picked.
             board.get(yNew).set(xNew,p);
@@ -492,6 +494,37 @@ public class Board {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    private int redNumMovesBeforeTake = 0;
+    private int blackNumMovesBeforeTake = 0;
+
+    // updates player number of moves before they take a piece
+    // if reset is true both player's move count is reset
+    private void updatePlayerNumberOfMovesOrReset(Player player, boolean reset){
+        if(reset){ // resets player moves if any player takes another player's piece
+            redNumMovesBeforeTake = 0;
+            blackNumMovesBeforeTake = 0;
+        }
+        else{
+            if(player.getColor() == "Red"){
+                redNumMovesBeforeTake++;
+            }
+            else if(player.getColor() == "Black"){
+                blackNumMovesBeforeTake++;
+            }
+        }
+    }
+
+    // returns true if both players have not taken the other player's piece
+    // after 15 moves
+    public boolean draw(){
+        final int MAX_EMPTY_MOVES = 15; // max number of moves that do not result in taking the other players piece
+        if(redNumMovesBeforeTake > MAX_EMPTY_MOVES && blackNumMovesBeforeTake > MAX_EMPTY_MOVES){
+            System.out.println("Game is a draw!");
+            return true;
         }
         return false;
     }

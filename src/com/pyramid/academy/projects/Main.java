@@ -20,6 +20,6 @@ public class Main {
                 playerOneTurn = true;
             }
             System.out.print(board);
-        }while(!board.checkForWin());
+        }while(!board.checkForWin() || board.draw());
     }
 }
